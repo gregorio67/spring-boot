@@ -1,0 +1,34 @@
+####################################################################
+# Tomcat Server Configuration                                      #
+####################################################################
+server:
+  port: 9000
+  servlet:
+    context-path: /
+
+####################################################################
+# Spring application Configuration                                 #
+####################################################################
+spring:
+  profiles: dev
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:D:/sqlite3/deploy
+    username:
+    password:
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
+####################################################################
+# LOG Configuration   			                                   #
+####################################################################
+logging:
+  level:
+    org.springframework.boot: DEBUG
+    dymn.demo: DEBUG
+  pattern: 
+    console: 
+    file: 
+  file: 

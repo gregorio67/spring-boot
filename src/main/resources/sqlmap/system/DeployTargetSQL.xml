@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--=========================================================================-->
+<!-- NAME : BatchResultSQL.xml                                               -->
+<!-- DESC : Batch Job Result                                                 -->
+<!--=========================================================================-->
+<!--    DATE        AUTHOR                      DESCRIPTION                  -->
+<!-- ==========  ============  ==============================================-->
+<!-- 2017.09.14  Gregorio Kim    Initial Creation 	                         -->
+<!--=========================================================================-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="deploy.target">
+
+	<!--=========================================================================-->
+	<!-- NAME : selCpuInfoItem                                                   -->
+	<!-- DESC : Retrieve  HOST Information                                       -->
+	<!--=========================================================================-->
+	<!--    DATE        AUTHOR                      DESCRIPTION                  -->
+	<!-- ==========  ============  ==============================================-->
+	<!-- 2017.05.13  Gregorio Kim    Initial Creation                            -->
+	<!--=========================================================================-->
+	<select id="selDeployTargetCnt" parameterType="hashmap" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM  DEPLOY_TARGET
+		WHERE 1 = 1
+		<if test="hostName != null and hostName !=''">
+		AND SYSTEM_NAME = #{systemName}
+		</if>
+		<if test="subSystem != null and subSystem !=''">
+		AND SUB_SYSTEM = #{subSystem}
+		ORDER BY SYSTEM_NAME, SUB_SYSTEM
+		</if>
+	</select>
+
+	<!--=========================================================================-->
+	<!-- NAME : selDeployTargetList                                              -->
+	<!-- DESC : Retrieve  HOST Information                                       -->
+	<!--=========================================================================-->
+	<!--    DATE        AUTHOR                      DESCRIPTION                  -->
+	<!-- ==========  ============  ==============================================-->
+	<!-- 2017.05.13  Gregorio Kim    Initial Creation                            -->
+	<!--=========================================================================-->
+	<select id="selDeployTargetList" parameterType="hashmap" resultType="camelMap">
+		SELECT  SEQ
+		    	,SYSTEM_NAME
+		    	,SUB_SYSTEM
+		    	,NODE_NO
+		    	,IP_ADDR
+		    	,LISTEN_PORT
+		FROM  DEPLOY_TARGET
+		WHERE 1 = 1
+		<if test="systemName != null and systemName !=''">
+		AND SYSTEM_NAME = #{systemName}
+		</if>
+		<if test="subSystem != null and subSystem !=''">
+		AND SUB_SYSTEM = #{subSystem}
+		</if>
+		ORDER BY SYSTEM_NAME, SUB_SYSTEM
+		<include refid="Page.mysqlpageOffset" />
+	</select>
+
+	<!--=========================================================================-->
+	<!-- NAME : selHostNameList                                            	    -->
+	<!-- DESC : Insert Menu											             -->
+	<!--=========================================================================-->
+	<!--    DATE        AUTHOR                      DESCRIPTION                  -->
+	<!-- ==========  ============  ==============================================-->
+	<!-- 2018.05.13  Gregorio Kim    Initial Creation                            -->
+	<!--=========================================================================-->	
+	<select id="selSystemNameList" resultType="camelMap">
+		SELECT  DISTINCT(SYSTEM_NAME)
+		FROM  DEPLOY_TARGET
+		WHERE 1 = 1
+		AND   USE_YN = 'Y'
+	</select>
+
+	<!--=========================================================================-->
+	<!-- NAME : selDeployTypeList                                          	    -->
+	<!-- DESC : Insert Menu											             -->
+	<!--=========================================================================-->
+	<!--    DATE        AUTHOR                      DESCRIPTION                  -->
+	<!-- ==========  ============  ==============================================-->
+	<!-- 2018.05.13  Gregorio Kim    Initial Creation                            -->
+	<!--=========================================================================-->	
+	<select id="selSubSystemList" resultType="camelMap">
+		SELECT  DISTINCT(SUB_SYSTEM)
+		FROM  DEPLOY_TARGET
+		WHERE 1 = 1
+	</select>
+
+	<!--=========================================================================-->
+	<!-- NAME : selDeployTargetList                                              -->
+	<!-- DESC : Retrieve  HOST Information                                       -->
+	<!--=========================================================================-->
+	<!--    DATE        AUTHOR                      DESCRIPTION                  -->
+	<!-- ==========  ============  ==============================================-->
+	<!-- 2017.05.13  Gregorio Kim    Initial Creation                            -->
+	<!--=========================================================================-->
+	<select id="selDeployTargetItem" parameterType="hashmap" resultType="camelMap">
+		SELECT   A.SYSTEM_NAME
+		    	,A.SUB_SYSTEM
+		    	,A.NODE_NO
+		    	,A.IP_ADDR
+		    	,A.LISTEN_PORT
+		    	,B.COMMAND
+		    	,B.SHELL_COMMAND
+		    	,B.SHELL_NAME
+		    	,B.SHELL_PARAMS
+		FROM  DEPLOY_TARGET A
+ 			 ,DEPLOY_COMMAND B
+		WHERE 1 = 1
+		AND   A.SYSTEM_NAME = B.SYSTEM_NAME
+		AND	  A.SUB_SYSTEM = B.SUB_SYSTEM
+		AND	  A.NODE_NO = B.NODE_NO
+		AND	  A.SYSTEM_NAME = #{systemName}
+		AND   A.SUB_SYSTEM = #{subSystem}
+		AND   A.NODE_NO = #{nodeNo}
+	</select>
+
+</mapper>
